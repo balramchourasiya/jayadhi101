@@ -1,146 +1,152 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Star, Clock, Target } from 'lucide-react';
 import { toast } from './../ui/toaster';
+import MultipleChoiceQuiz from '../games/quiz/MultipleChoiceQuiz';
+import TrueFalseQuiz from '../games/quiz/TrueFalseQuiz';
+import FillInTheBlanksQuiz from '../games/quiz/FillInTheBlanksQuiz';
+import MatchTheFollowing from '../games/quiz/MatchTheFollowing';
+import CrosswordPuzzle from '../games/puzzle/CrosswordPuzzle';
+import SudokuPuzzle from '../games/puzzle/SudokuPuzzle';
+import WordSearchPuzzle from '../games/puzzle/WordSearchPuzzle';
+import JigsawPuzzle from '../games/puzzle/JigsawPuzzle';
+import { useAuth } from '../../contexts/AuthContext';
 
 const GameGrid: React.FC = () => {
+  const [activeGame, setActiveGame] = useState<string | null>(null);
+  const { currentUser } = useAuth();
+  const grade = currentUser?.standard || 5;
+
   const games = [
     {
       id: 1,
-      title: 'Math Quest',
-      description: 'Solve mathematical puzzles and equations',
+      title: 'Multiple Choice Quiz',
+      description: 'Test your knowledge with multiple choice questions',
       difficulty: 'Easy',
       duration: '10 min',
       category: 'Mathematics',
       icon: '🔢',
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-blue-500 to-cyan-500',
+      component: <MultipleChoiceQuiz grade={grade} />,
     },
     {
       id: 2,
-      title: 'Science Explorer',
-      description: 'Discover scientific concepts through experiments',
-      difficulty: 'Medium',
-      duration: '15 min',
+      title: 'True/False Quiz',
+      description: 'Decide if the statements are true or false',
+      difficulty: 'Easy',
+      duration: '8 min',
       category: 'Science',
       icon: '🧪',
-      color: 'from-green-500 to-emerald-500'
+      color: 'from-green-500 to-emerald-500',
+      component: <TrueFalseQuiz grade={grade} />,
     },
     {
       id: 3,
-      title: 'Language Arts',
-      description: 'Improve reading and writing skills',
-      difficulty: 'Easy',
+      title: 'Fill in the Blanks',
+      description: 'Complete the sentences with the correct words',
+      difficulty: 'Medium',
       duration: '12 min',
       category: 'Language',
       icon: '📚',
-      color: 'from-purple-500 to-pink-500'
+      color: 'from-purple-500 to-pink-500',
+      component: <FillInTheBlanksQuiz grade={grade} />,
     },
     {
       id: 4,
-      title: 'History Time',
-      description: 'Travel through time and learn history',
+      title: 'Match the Following',
+      description: 'Match items from two columns',
       difficulty: 'Medium',
-      duration: '18 min',
+      duration: '10 min',
       category: 'History',
       icon: '🏛️',
-      color: 'from-orange-500 to-red-500'
+      color: 'from-orange-500 to-red-500',
+      component: <MatchTheFollowing grade={grade} />,
     },
     {
       id: 5,
-      title: 'Geography Challenge',
-      description: 'Explore the world and its countries',
-      difficulty: 'Hard',
-      duration: '20 min',
+      title: 'Crossword Puzzle',
+      description: 'Solve the crossword using clues',
+      difficulty: 'Medium',
+      duration: '15 min',
       category: 'Geography',
       icon: '🌍',
-      color: 'from-teal-500 to-blue-500'
+      color: 'from-teal-500 to-blue-500',
+      component: <CrosswordPuzzle grade={grade} />,
     },
     {
       id: 6,
-      title: 'Logic Puzzles',
-      description: 'Train your brain with logical thinking',
+      title: 'Sudoku Puzzle',
+      description: 'Fill the grid with numbers',
       difficulty: 'Hard',
-      duration: '25 min',
+      duration: '20 min',
       category: 'Logic',
       icon: '🧩',
-      color: 'from-indigo-500 to-purple-500'
-    }
+      color: 'from-indigo-500 to-purple-500',
+      component: <SudokuPuzzle grade={grade} />,
+    },
+    {
+      id: 7,
+      title: 'Word Search',
+      description: 'Find hidden words in the grid',
+      difficulty: 'Medium',
+      duration: '15 min',
+      category: 'Vocabulary',
+      icon: '🔤',
+      color: 'from-pink-500 to-yellow-500',
+      component: <WordSearchPuzzle grade={grade} />,
+    },
+    {
+      id: 8,
+      title: 'Jigsaw Puzzle',
+      description: 'Arrange pieces to complete the picture',
+      difficulty: 'Easy',
+      duration: '10 min',
+      category: 'Puzzle',
+      icon: '🧩',
+      color: 'from-yellow-400 to-orange-500',
+      component: <JigsawPuzzle grade={grade} />,
+    },
   ];
 
   const handleGameClick = (game: typeof games[0]) => {
-    toast.success(`Starting ${game.title}! 🎮`);
-    // In a real app, this would navigate to the game
-    console.log(`Starting game: ${game.title}`);
+    setActiveGame(game.title);
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy':
-        return 'text-green-400 bg-green-500/20';
-      case 'Medium':
-        return 'text-yellow-400 bg-yellow-500/20';
-      case 'Hard':
-        return 'text-red-400 bg-red-500/20';
-      default:
-        return 'text-gray-400 bg-gray-500/20';
-    }
-  };
+  // Render the selected game component
+  const activeGameObj = games.find(g => g.title === activeGame);
+  if (activeGameObj) {
+    return (
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+        <button
+          className="mb-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800"
+          onClick={() => setActiveGame(null)}
+        >
+          ← Back to Game Grid
+        </button>
+        {activeGameObj.component}
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-      <div className="flex items-center space-x-2 mb-6">
-        <Play className="w-6 h-6 text-purple-400" />
-        <h2 className="text-xl font-bold text-white">Educational Games</h2>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {games.map((game, index) => (
-          <motion.div
-            key={game.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={() => handleGameClick(game)}
-            className="bg-white/5 hover:bg-white/10 rounded-xl p-4 border border-white/10 cursor-pointer transition-all duration-200 hover:scale-105 group"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className={`w-12 h-12 bg-gradient-to-r ${game.color} rounded-lg flex items-center justify-center text-2xl`}>
-                {game.icon}
-              </div>
-              <div className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(game.difficulty)}`}>
-                {game.difficulty}
-              </div>
-            </div>
-
-            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
-              {game.title}
-            </h3>
-            
-            <p className="text-sm text-gray-300 mb-4 line-clamp-2">
-              {game.description}
-            </p>
-
-            <div className="flex items-center justify-between text-xs text-gray-400">
-              <div className="flex items-center space-x-1">
-                <Clock className="w-3 h-3" />
-                <span>{game.duration}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Target className="w-3 h-3" />
-                <span>{game.category}</span>
-              </div>
-            </div>
-
-            <div className="mt-3 flex items-center space-x-1">
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <Star className="w-4 h-4 text-gray-400" />
-            </div>
-          </motion.div>
-        ))}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {games.map((game) => (
+        <motion.div
+          key={game.id}
+          whileHover={{ scale: 1.05 }}
+          className={`bg-gradient-to-br ${game.color} rounded-xl shadow-lg p-6 flex flex-col items-center cursor-pointer transition-all`}
+          onClick={() => handleGameClick(game)}
+        >
+          <div className="text-5xl mb-2">{game.icon}</div>
+          <h3 className="text-xl font-bold mb-1">{game.title}</h3>
+          <p className="text-sm mb-2 text-center">{game.description}</p>
+          <div className="flex items-center space-x-2 text-xs text-gray-100">
+            <span className="flex items-center"><Star className="w-4 h-4 mr-1" />{game.difficulty}</span>
+            <span className="flex items-center"><Clock className="w-4 h-4 mr-1" />{game.duration}</span>
+            <span className="flex items-center"><Target className="w-4 h-4 mr-1" />{game.category}</span>
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 };
