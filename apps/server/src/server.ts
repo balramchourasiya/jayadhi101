@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import dotenv from 'dotenv';
 import winston from 'winston';
 
@@ -58,11 +58,11 @@ app.use(cors({
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+app.use(morgan('combined', { stream: { write: (message: string) => logger.info(message.trim()) } }));
 app.use(limiter);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
@@ -71,14 +71,14 @@ app.get('/health', (req, res) => {
 });
 
 // Basic API endpoints for testing
-app.get('/api/test', (req, res) => {
+app.get('/api/test', (req: Request, res: Response) => {
   res.json({ 
     message: 'Server is running!',
     timestamp: new Date().toISOString()
   });
 });
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', (req: Request, res: Response) => {
   // Mock login endpoint
   res.json({
     success: true,
@@ -94,7 +94,7 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', (req: Request, res: Response) => {
   // Mock register endpoint
   res.json({
     success: true,
@@ -111,7 +111,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
   logger.info(`User connected: ${socket.id}`);
 
   // Join user to their personal room
@@ -121,13 +121,13 @@ io.on('connection', (socket) => {
   });
 
   // Handle game progress updates
-  socket.on('game-progress', (data) => {
+  socket.on('game-progress', (data: any) => {
     // Broadcast to all connected clients
     io.emit('game-progress-update', data);
   });
 
   // Handle leaderboard updates
-  socket.on('leaderboard-update', (data) => {
+  socket.on('leaderboard-update', (data: any) => {
     io.emit('leaderboard-refresh', data);
   });
 
@@ -137,7 +137,7 @@ io.on('connection', (socket) => {
 });
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   logger.error(err.stack);
   res.status(500).json({
     success: false,
@@ -146,7 +146,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use('*', (req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     error: 'Route not found'
@@ -154,6 +154,7 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI as string;
 
 server.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
