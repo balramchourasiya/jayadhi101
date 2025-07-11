@@ -154,6 +154,7 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI as string;
 
 server.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
