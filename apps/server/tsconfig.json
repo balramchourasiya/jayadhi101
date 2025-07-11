@@ -25,9 +25,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "ts-node": {
-    "esm": true
-  },
   "include": [
     "src/**/*"
   ],
