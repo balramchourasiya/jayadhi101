@@ -2,24 +2,33 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp } from 'lucide-react';
 import { UserProfile } from '../../contexts/AuthContext';
+import { useProgress } from '../../contexts/ProgressContext';
 
 interface ProgressChartProps {
   user: UserProfile;
 }
 
 const ProgressChart: React.FC<ProgressChartProps> = ({ user }) => {
-  // Mock data for the last 7 days
-  const weeklyData = [
-    { day: 'Mon', xp: 25, games: 2 },
-    { day: 'Tue', xp: 40, games: 3 },
-    { day: 'Wed', xp: 15, games: 1 },
-    { day: 'Thu', xp: 60, games: 4 },
-    { day: 'Fri', xp: 35, games: 2 },
-    { day: 'Sat', xp: 50, games: 3 },
-    { day: 'Sun', xp: 30, games: 2 }
-  ];
+  const { 
+    getWeeklyXp, 
+    getWeeklyGames, 
+    getDayLabels, 
+    getWeeklyTotalXp, 
+    getAverageXpPerDay 
+  } = useProgress();
+  
+  const weeklyXp = getWeeklyXp();
+  const weeklyGames = getWeeklyGames();
+  const dayLabels = getDayLabels();
+  
+  // Create weekly data from context
+  const weeklyData = dayLabels.map((day, index) => ({
+    day,
+    xp: weeklyXp[index],
+    games: weeklyGames[index]
+  }));
 
-  const maxXP = Math.max(...weeklyData.map(d => d.xp));
+  const maxXP = Math.max(...weeklyXp, 1); // Ensure we don't divide by zero
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
@@ -34,7 +43,7 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ user }) => {
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-gray-300">XP Earned</span>
             <span className="text-sm text-green-400 font-medium">
-              {weeklyData.reduce((sum, day) => sum + day.xp, 0)} XP total
+              {getWeeklyTotalXp()} XP total
             </span>
           </div>
           
@@ -66,7 +75,7 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ user }) => {
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-gray-300">Games Played</span>
             <span className="text-sm text-blue-400 font-medium">
-              {weeklyData.reduce((sum, day) => sum + day.games, 0)} games total
+              {weeklyGames.reduce((sum, games) => sum + games, 0)} games total
             </span>
           </div>
           
@@ -93,13 +102,13 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ user }) => {
           <div className="grid grid-cols-2 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-white">
-                {weeklyData.reduce((sum, day) => sum + day.xp, 0)}
+                {getWeeklyTotalXp()}
               </div>
               <div className="text-xs text-gray-400">Total XP This Week</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-white">
-                {Math.round(weeklyData.reduce((sum, day) => sum + day.xp, 0) / 7)}
+                {getAverageXpPerDay()}
               </div>
               <div className="text-xs text-gray-400">Average XP/Day</div>
             </div>
@@ -110,4 +119,4 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ user }) => {
   );
 };
 
-export default ProgressChart; 
+export default ProgressChart;

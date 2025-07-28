@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ToastProvider } from './components/ui/toaster';
+import { ProgressProvider } from './contexts/ProgressContext';
 import AuthPage from './components/auth/AuthPage';
 import MainDashboard from './components/dashboard/MainDashboard';
 import ProfilePage from './components/profile/ProfilePage';
 import SelectStandardPage from './components/auth/SelectStandardPage';
+import { initializeSocket, disconnectSocket } from './services/socketService';
 
 function ProtectedRoute({ children }: { children: React.ReactElement }) {
   const { currentUser } = useAuth();
@@ -57,6 +59,17 @@ function AppRoutes() {
 }
 
 function App() {
+  // Initialize socket connection when app starts
+  useEffect(() => {
+    // Initialize socket
+    const socket = initializeSocket();
+    
+    // Clean up socket connection when app unmounts
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <ToastProvider>

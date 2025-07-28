@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
+import { ProgressProvider } from '../../contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { 
   LogOut, 
@@ -15,6 +16,7 @@ import {
 import GameGrid from './GameGrid';
 import ProgressChart from './ProgressChart';
 import QuickStats from './QuickStats';
+import Leaderboard from './Leaderboard';
 
 const MainDashboard: React.FC = () => {
   const { currentUser, signOut } = useAuth();
@@ -38,7 +40,8 @@ const MainDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <ProgressProvider user={currentUser}>
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       {/* Header */}
       <div className="bg-white/10 backdrop-blur-lg border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -125,11 +128,15 @@ const MainDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Leaderboard */}
+            <Leaderboard />
           </motion.div>
         </div>
       </div>
-    </div>
+      </div>
+    </ProgressProvider>
   );
 };
 
-export default MainDashboard; 
+export default MainDashboard;
