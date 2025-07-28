@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useProgress } from '../../../contexts/ProgressContext';
 
 interface MultipleChoiceQuizProps {
   grade: number;
@@ -71,7 +73,57 @@ const MultipleChoiceQuiz: React.FC<MultipleChoiceQuizProps> = ({ grade }) => {
     }
   };
 
+  const { currentUser } = useAuth();
+  const { recordActivity } = useProgress();
+
+  // Calculate XP earned based on score and grade level
+  const calculateXpEarned = () => {
+    const baseXp = 10; // Base XP for completing a quiz
+    const correctAnswerXp = 5; // XP per correct answer
+    const gradeMultiplier = grade / 5; // Higher grades earn more XP
+    
+    return Math.round(baseXp + (score * correctAnswerXp * gradeMultiplier));
+  };
+
+  // Handle quiz completion and update progress
+  const handleQuizCompletion = () => {
+    if (!finished) return;
+    
+    const xpEarned = calculateXpEarned();
+    const isPerfectScore = score === questions.length;
+    
+    // Record the activity in progress context
+    recordActivity({
+      gamePlayed: true,
+      xpEarned,
+      gameCompleted: true,
+    });
+    
+    // Check if user earned a perfect score badge
+    if (isPerfectScore) {
+      const updatedBadges = [...(currentUser?.badges || [])];
+      if (!updatedBadges.includes('perfect_score')) {
+        updatedBadges.push('perfect_score');
+        // Update user profile with new badge
+        // TODO: Implement user profile update logic
+        // For now, we'll just log the badge update
+        console.log('User earned perfect score badge:', {
+          badges: updatedBadges
+        });
+      }
+    }
+  };
+
+  // Call handleQuizCompletion when quiz is finished
+  React.useEffect(() => {
+    if (finished) {
+      handleQuizCompletion();
+    }
+  }, [finished]);
+
   if (finished) {
+    const xpEarned = calculateXpEarned();
+    
     return (
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -88,11 +140,12 @@ const MultipleChoiceQuiz: React.FC<MultipleChoiceQuizProps> = ({ grade }) => {
               style={{ width: `${(score / questions.length) * 100}%` }}
             ></div>
           </div>
-          <p className="text-gray-400">
+          <p className="text-gray-400 mb-4">
             {score === questions.length ? 'Perfect! 🏆' : 
              score >= questions.length * 0.8 ? 'Great job! 🌟' : 
              score >= questions.length * 0.6 ? 'Good effort! 👍' : 'Keep practicing! 💪'}
           </p>
+          <p className="text-green-400 font-semibold">+ {xpEarned} XP earned!</p>
         </div>
       </motion.div>
     );
@@ -182,4 +235,4 @@ const MultipleChoiceQuiz: React.FC<MultipleChoiceQuizProps> = ({ grade }) => {
   );
 };
 
-export default MultipleChoiceQuiz; 
+export default MultipleChoiceQuiz;

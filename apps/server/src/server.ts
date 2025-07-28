@@ -110,6 +110,107 @@ app.post('/api/auth/register', (req: Request, res: Response) => {
   });
 });
 
+// Import Firebase and progress service
+import './config/firebase';
+import { updateUserProgress, getUserProgress, getTopUsers } from './services/progressService';
+
+
+// Progress update endpoint (called on real activity)
+app.post('/api/progress/update', async (req: Request, res: Response) => {
+  try {
+    const { userId, xpEarned, gameResult } = req.body;
+    if (!userId || typeof xpEarned !== 'number') {
+      return res.status(400).json({ success: false, error: 'Missing userId or xpEarned' });
+    }
+
+    // Update progress in Firestore
+    const progress = await updateUserProgress({
+      userId,
+      xpEarned,
+      gameResult
+    });
+
+    return res.json({
+      success: true,
+      progress: {
+        xp: progress.xp,
+        level: progress.level,
+        gamesPlayed: progress.gamesPlayed,
+        dayStreak: progress.dayStreak,
+        levelProgress: progress.levelProgress,
+        week: progress.week
+      }
+    });
+  } catch (error) {
+    logger.error('Error in progress update endpoint:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to update progress'
+    });
+  }
+});
+
+// Get user progress endpoint
+app.get('/api/progress/:userId', async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'Missing userId' });
+    }
+
+    // Get progress from Firestore
+    const progress = await getUserProgress(userId);
+    
+    if (!progress) {
+      return res.status(404).json({
+        success: false,
+        error: 'No progress found for this user'
+      });
+    }
+
+    return res.json({
+      success: true,
+      progress
+    });
+  } catch (error) {
+    logger.error('Error in get progress endpoint:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get progress'
+    });
+  }
+});
+
+// Get top users for leaderboard
+app.get('/api/leaderboard/top', async (req: Request, res: Response) => {
+  try {
+    // Get limit from query parameter or use default (10)
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+    
+    // Validate limit
+    if (isNaN(limit) || limit < 1 || limit > 100) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid limit. Must be a number between 1 and 100.' 
+      });
+    }
+    
+    // Get top users from Firestore
+    const leaderboard = await getTopUsers(limit);
+    
+    return res.json({
+      success: true,
+      leaderboard
+    });
+  } catch (error) {
+    logger.error('Error in leaderboard endpoint:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve leaderboard'
+    });
+  }
+});
+
 // Socket.IO connection handling
 io.on('connection', (socket: Socket) => {
   logger.info(`User connected: ${socket.id}`);

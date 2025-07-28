@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
+import { joinUserRoom } from '../services/socketService';
 
 // User types
 export interface UserProfile {
@@ -156,6 +157,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userProfile = await convertFirebaseUser(userCredential.user);
       setCurrentUser(userProfile);
       
+      // Join user's socket room for real-time updates
+      joinUserRoom(userProfile.uid);
+      
       console.log('Account created successfully! Welcome to GameLearn! 🎮');
     } catch (error: any) {
       console.error('Sign up error:', error);
@@ -213,6 +217,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const user = createGuestProfile(displayName);
       setCurrentUser(user);
       storeGuestUser(user);
+      
+      // Join guest user's socket room for real-time updates
+      joinUserRoom(user.uid);
       console.log('Welcome! You can explore as a guest. Sign up to save your progress! 👋');
     } catch (error: any) {
       console.error('Guest sign in error:', error);
@@ -291,6 +298,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Firebase user signed in
             const userProfile = await convertFirebaseUser(firebaseUser);
             setCurrentUser(userProfile);
+            
+            // Join user's socket room for real-time updates
+            joinUserRoom(userProfile.uid);
           } else {
             // Check for guest user in localStorage
             const guestUser = getGuestUser();
