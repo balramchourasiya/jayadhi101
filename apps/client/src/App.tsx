@@ -7,6 +7,7 @@ import AuthPage from './components/auth/AuthPage';
 import MainDashboard from './components/dashboard/MainDashboard';
 import ProfilePage from './components/profile/ProfilePage';
 import SelectStandardPage from './components/auth/SelectStandardPage';
+import ChatbotProvider from './components/chatbot/ChatbotProvider';
 import { initializeSocket, disconnectSocket } from './services/socketService';
 
 function ProtectedRoute({ children }: { children: React.ReactElement }) {
@@ -30,31 +31,35 @@ function RequireStandard({ children }: { children: React.ReactElement }) {
 
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={
-        <PublicRoute>
-          <AuthPage />
-        </PublicRoute>
-      } />
-      <Route path="/select-standard" element={
-        <ProtectedRoute>
-          <SelectStandardPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/main" element={
-        <ProtectedRoute>
-          <RequireStandard>
-            <MainDashboard />
-          </RequireStandard>
-        </ProtectedRoute>
-      } />
-      <Route path="/profile" element={
-        <ProtectedRoute>
-          <ProfilePage />
-        </ProtectedRoute>
-      } />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+    <ProgressProvider>
+      <ChatbotProvider>
+        <Routes>
+          <Route path="/" element={
+            <PublicRoute>
+              <AuthPage />
+            </PublicRoute>
+          } />
+          <Route path="/select-standard" element={
+            <ProtectedRoute>
+              <SelectStandardPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/main" element={
+            <ProtectedRoute>
+              <RequireStandard>
+                <MainDashboard />
+              </RequireStandard>
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </ChatbotProvider>
+    </ProgressProvider>
   );
 }
 
