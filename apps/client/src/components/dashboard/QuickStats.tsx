@@ -2,40 +2,56 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Target, Clock, TrendingUp } from 'lucide-react';
 import { UserProfile } from '../../contexts/AuthContext';
+import { useProgress } from '../../contexts/ProgressContext';
 
 interface QuickStatsProps {
   user: UserProfile;
 }
 
 const QuickStats: React.FC<QuickStatsProps> = ({ user }) => {
+  const { weeklyProgress, getTodayXp, getWeeklyGames } = useProgress();
+  
+  // Calculate next level XP requirement
+  const nextLevelXp = user.level * 100;
+  const xpToNextLevel = nextLevelXp - user.xp;
+  
+  // Get today's XP
+  const todayXp = getTodayXp();
+  
+  // Get weekly games played
+  const weeklyGamesPlayed = getWeeklyGames().reduce((sum, games) => sum + games, 0);
+  
+  // Get current streak
+  const currentStreak = weeklyProgress?.currentStreak || 0;
+  
   const stats = [
     {
       title: 'Total XP',
       value: user.xp,
       icon: Trophy,
       color: 'from-yellow-500 to-orange-500',
-      change: '+25 today'
+      change: todayXp > 0 ? `+${todayXp} today` : 'No XP today'
     },
     {
       title: 'Current Level',
       value: user.level,
       icon: Target,
       color: 'from-purple-500 to-pink-500',
-      change: 'Next: 100 XP'
+      change: `Next: ${xpToNextLevel} XP`
     },
     {
       title: 'Games Played',
-      value: 12,
+      value: weeklyProgress?.totalGamesPlayed || 0,
       icon: Clock,
       color: 'from-blue-500 to-cyan-500',
-      change: '+3 this week'
+      change: weeklyGamesPlayed > 0 ? `+${weeklyGamesPlayed} this week` : 'No games this week'
     },
     {
       title: 'Day Streak',
-      value: 5,
+      value: currentStreak,
       icon: TrendingUp,
       color: 'from-green-500 to-emerald-500',
-      change: 'Keep it up!'
+      change: currentStreak > 0 ? 'Keep it up!' : 'Start your streak!'
     }
   ];
 
@@ -71,4 +87,4 @@ const QuickStats: React.FC<QuickStatsProps> = ({ user }) => {
   );
 };
 
-export default QuickStats; 
+export default QuickStats;

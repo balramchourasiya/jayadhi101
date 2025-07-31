@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { ProgressProvider, useProgress } from '../../contexts/ProgressContext';
 import { 
   ArrowLeft, 
   User, 
@@ -76,7 +77,8 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <ProgressProvider user={currentUser}>
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       {/* Header */}
       <div className="bg-white/10 backdrop-blur-lg border-b border-white/20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -205,14 +207,7 @@ const ProfilePage: React.FC = () => {
                   <div className="text-2xl font-bold text-white">{currentUser.level}</div>
                   <div className="text-sm text-gray-400">Level</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">12</div>
-                  <div className="text-sm text-gray-400">Games Played</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">5</div>
-                  <div className="text-sm text-gray-400">Day Streak</div>
-                </div>
+                <ProgressStats />
               </div>
             </div>
           </motion.div>
@@ -268,7 +263,26 @@ const ProfilePage: React.FC = () => {
           </motion.div>
         </div>
       )}
-    </div>
+      </div>
+    </ProgressProvider>
+  );
+};
+
+// Component to display progress stats using the ProgressContext
+const ProgressStats: React.FC = () => {
+  const { weeklyProgress } = useProgress();
+  
+  return (
+    <>
+      <div className="text-center">
+        <div className="text-2xl font-bold text-white">{weeklyProgress?.totalGamesPlayed || 0}</div>
+        <div className="text-sm text-gray-400">Games Played</div>
+      </div>
+      <div className="text-center">
+        <div className="text-2xl font-bold text-white">{weeklyProgress?.currentStreak || 0}</div>
+        <div className="text-sm text-gray-400">Day Streak</div>
+      </div>
+    </>
   );
 };
 
