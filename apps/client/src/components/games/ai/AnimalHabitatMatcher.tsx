@@ -45,7 +45,7 @@ const animals: Animal[] = [
     name: 'Polar Bear',
     features: ['thick fur', 'white color', 'large paws', 'swims well', 'carnivore'],
     habitat: 'Arctic',
-    image: 'https://via.placeholder.com/150?text=Polar+Bear',
+    image: '/images/animals/polar-bear.png',
     difficulty: 1
   },
   {
@@ -53,7 +53,7 @@ const animals: Animal[] = [
     name: 'Camel',
     features: ['humps', 'long eyelashes', 'wide feet', 'stores water', 'herbivore'],
     habitat: 'Desert',
-    image: 'https://via.placeholder.com/150?text=Camel',
+    image: '/images/animals/camel.png',
     difficulty: 1
   },
   {
@@ -61,7 +61,7 @@ const animals: Animal[] = [
     name: 'Monkey',
     features: ['prehensile tail', 'opposable thumbs', 'lives in trees', 'omnivore', 'social'],
     habitat: 'Rainforest',
-    image: 'https://via.placeholder.com/150?text=Monkey',
+    image: '/images/animals/monkey.png',
     difficulty: 2
   },
   {
@@ -69,7 +69,7 @@ const animals: Animal[] = [
     name: 'Penguin',
     features: ['waterproof feathers', 'wings for swimming', 'black and white', 'carnivore', 'social'],
     habitat: 'Antarctic',
-    image: 'https://via.placeholder.com/150?text=Penguin',
+    image: '/images/animals/penguin.png',
     difficulty: 2
   },
   {
@@ -77,7 +77,7 @@ const animals: Animal[] = [
     name: 'Lion',
     features: ['mane', 'sharp claws', 'social groups', 'carnivore', 'territorial'],
     habitat: 'Savanna',
-    image: 'https://via.placeholder.com/150?text=Lion',
+    image: '/images/animals/lion.png',
     difficulty: 2
   },
   {
@@ -85,7 +85,7 @@ const animals: Animal[] = [
     name: 'Salmon',
     features: ['scales', 'gills', 'swims upstream', 'carnivore', 'migratory'],
     habitat: 'River',
-    image: 'https://via.placeholder.com/150?text=Salmon',
+    image: '/images/animals/salmon.png',
     difficulty: 3
   },
   {
@@ -93,7 +93,7 @@ const animals: Animal[] = [
     name: 'Kangaroo',
     features: ['pouch', 'powerful legs', 'herbivore', 'social', 'nocturnal'],
     habitat: 'Grassland',
-    image: 'https://via.placeholder.com/150?text=Kangaroo',
+    image: '/images/animals/kangaroo.png',
     difficulty: 3
   },
   {
@@ -101,7 +101,7 @@ const animals: Animal[] = [
     name: 'Octopus',
     features: ['eight arms', 'ink sac', 'camouflage', 'carnivore', 'intelligent'],
     habitat: 'Ocean',
-    image: 'https://via.placeholder.com/150?text=Octopus',
+    image: '/images/animals/octopus.png',
     difficulty: 4
   },
   {
@@ -109,7 +109,7 @@ const animals: Animal[] = [
     name: 'Panda',
     features: ['black and white', 'thumb-like wrist bone', 'herbivore', 'solitary', 'climbs trees'],
     habitat: 'Mountain Forest',
-    image: 'https://via.placeholder.com/150?text=Panda',
+    image: '/images/animals/panda.png',
     difficulty: 4
   },
   {
@@ -117,7 +117,7 @@ const animals: Animal[] = [
     name: 'Bat',
     features: ['wings', 'echolocation', 'nocturnal', 'hangs upside down', 'insectivore'],
     habitat: 'Cave',
-    image: 'https://via.placeholder.com/150?text=Bat',
+    image: '/images/animals/bat.png',
     difficulty: 5
   }
 ];
@@ -127,61 +127,61 @@ const habitats: Habitat[] = [
     id: 1,
     name: 'Arctic',
     features: ['ice', 'snow', 'cold temperatures', 'low vegetation', 'seasonal daylight'],
-    image: 'https://via.placeholder.com/150?text=Arctic'
+    image: '/images/habitats/arctic.png'
   },
   {
     id: 2,
     name: 'Desert',
     features: ['sand', 'hot days', 'cold nights', 'little water', 'sparse vegetation'],
-    image: 'https://via.placeholder.com/150?text=Desert'
+    image: '/images/habitats/desert.png'
   },
   {
     id: 3,
     name: 'Rainforest',
     features: ['dense trees', 'high rainfall', 'high humidity', 'diverse plants', 'multi-layered canopy'],
-    image: 'https://via.placeholder.com/150?text=Rainforest'
+    image: '/images/habitats/rainforest.png'
   },
   {
     id: 4,
     name: 'Antarctic',
     features: ['ice', 'snow', 'extreme cold', 'seasonal daylight', 'rocky shores'],
-    image: 'https://via.placeholder.com/150?text=Antarctic'
+    image: '/images/habitats/antartic.png'
   },
   {
     id: 5,
     name: 'Savanna',
     features: ['grassland', 'scattered trees', 'seasonal rainfall', 'large herbivores', 'predators'],
-    image: 'https://via.placeholder.com/150?text=Savanna'
+    image: '/images/habitats/savanna.png'
   },
   {
     id: 6,
     name: 'River',
     features: ['flowing water', 'varying depths', 'seasonal changes', 'banks', 'aquatic plants'],
-    image: 'https://via.placeholder.com/150?text=River'
+    image: '/images/habitats/river.png'
   },
   {
     id: 7,
     name: 'Grassland',
     features: ['grasses', 'few trees', 'seasonal rainfall', 'grazing animals', 'burrowing animals'],
-    image: 'https://via.placeholder.com/150?text=Grassland'
+    image: '/images/habitats/grassland.png'
   },
   {
     id: 8,
     name: 'Ocean',
     features: ['salt water', 'waves', 'varying depths', 'currents', 'diverse marine life'],
-    image: 'https://via.placeholder.com/150?text=Ocean'
+    image: '/images/habitats/ocean.png'
   },
   {
     id: 9,
     name: 'Mountain Forest',
     features: ['high elevation', 'sloped terrain', 'coniferous trees', 'cool temperatures', 'seasonal changes'],
-    image: 'https://via.placeholder.com/150?text=Mountain+Forest'
+    image: '/images/habitats/mountain-forest.png'
   },
   {
     id: 10,
     name: 'Cave',
     features: ['darkness', 'constant temperature', 'high humidity', 'mineral formations', 'limited food sources'],
-    image: 'https://via.placeholder.com/150?text=Cave'
+    image: '/images/habitats/cave.png'
   }
 ];
 
