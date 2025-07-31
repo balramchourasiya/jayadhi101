@@ -110,9 +110,10 @@ app.post('/api/auth/register', (req: Request, res: Response) => {
   });
 });
 
-// Import Firebase and progress service
+// Import Firebase and services
 import './config/firebase';
 import { updateUserProgress, getUserProgress, getTopUsers } from './services/progressService';
+import { processQuestion, validateQuestion } from './services/chatbotService';
 
 
 // Progress update endpoint (called on real activity)
@@ -207,6 +208,41 @@ app.get('/api/leaderboard/top', async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       error: 'Failed to retrieve leaderboard'
+    });
+  }
+});
+
+// Chatbot endpoint
+app.post('/api/chatbot/ask', async (req: Request, res: Response) => {
+  try {
+    const { question } = req.body;
+    
+    // Validate input
+    if (!question) {
+      return res.status(400).json({
+        success: false,
+        error: 'Question is required'
+      });
+    }
+    
+    // Sanitize and validate question
+    const sanitizedQuestion = validateQuestion(question);
+    if (!sanitizedQuestion) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid question format or length'
+      });
+    }
+    
+    // Process question with Groq API
+    const result = await processQuestion(sanitizedQuestion);
+    
+    return res.json(result);
+  } catch (error) {
+    logger.error('Error in chatbot endpoint:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to process question'
     });
   }
 });
