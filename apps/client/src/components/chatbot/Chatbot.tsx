@@ -149,12 +149,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-24 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-40 overflow-hidden"
-          >
+  initial={{ opacity: 0, y: 100, scale: 0.8 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  exit={{ opacity: 0, y: 100, scale: 0.8 }}
+  transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+  className="fixed bottom-24 right-6 w-96 max-w-[90vw] sm:max-w-sm h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-40 overflow-hidden"
+>
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-2xl">
               <div className="flex items-center gap-3">
