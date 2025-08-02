@@ -57,7 +57,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onToggle }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chatbot/ask', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chatbot/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
